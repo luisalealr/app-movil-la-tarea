@@ -1,4 +1,4 @@
-package com.example.latarea.ui.login.views
+package com.example.latarea.ui.activities.login.views
 
 import android.util.Patterns
 import androidx.lifecycle.LiveData

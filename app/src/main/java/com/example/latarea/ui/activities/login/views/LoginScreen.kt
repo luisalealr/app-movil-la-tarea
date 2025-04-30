@@ -1,5 +1,6 @@
-package com.example.latarea.ui.login.views
+package com.example.latarea.ui.activities.login.views
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,9 +32,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.latarea.R
 import com.example.latarea.ui.theme.LaTareaTheme
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(viewModel: LoginViewModel, auth: FirebaseAuth) {
     LaTareaTheme {
         Box(
             Modifier
@@ -44,14 +46,15 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 Modifier
                     .align(Alignment.Center)
                     .padding(20.dp),
-                viewModel
+                viewModel,
+                auth
             )
         }
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel) {
+fun Login(modifier: Modifier, viewModel: LoginViewModel, auth: FirebaseAuth) {
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
@@ -86,7 +89,10 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
             Spacer(modifier = Modifier.padding(16.dp))
             BotonIniciarSesion(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                loginEnable
+                loginEnable,
+                auth,
+                email,
+                password
             ) { viewModel.onLoginSelected() }
             Spacer(modifier = Modifier.padding(16.dp))
             Text(
@@ -129,10 +135,25 @@ fun BotonIngresarConGoogle(modifier: Modifier) {
 }
 
 @Composable
-fun BotonIniciarSesion(modifier: Modifier, loginEnable: Boolean, onLoginSelected : () -> Unit) {
+fun BotonIniciarSesion(
+    modifier: Modifier,
+    loginEnable: Boolean,
+    auth: FirebaseAuth,
+    email: String,
+    password: String,
+    onLoginSelected: () -> Unit
+) {
     Box(modifier) {
         Button(
-            onClick = { onLoginSelected() },
+            onClick = { auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if(task.isSuccessful){
+                        //navegar
+                        Log.i("aris", "LOGIN OK")
+                    }else{
+                        //Error
+                        Log.i("aris", "LOGIN KO")
+                    }
+            } },
             shape = RoundedCornerShape(5.dp),
             enabled = loginEnable
         ) {
