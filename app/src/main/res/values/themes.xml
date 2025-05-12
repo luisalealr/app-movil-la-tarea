@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.LaTarea" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.LaTarea" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_la_tarea</item>
+        <item name="postSplashScreenTheme">@style/Theme.LaTarea.PostSplash</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+
+    </style>
+
+    <style name="Theme.LaTarea.PostSplash" parent="Theme.Material3.DayNight.NoActionBar">
+
+    </style>
+
 </resources>

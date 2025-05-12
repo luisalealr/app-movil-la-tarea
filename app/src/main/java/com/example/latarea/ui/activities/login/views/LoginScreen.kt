@@ -68,7 +68,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, auth: FirebaseAuth) {
             Spacer(modifier = Modifier.padding(16.dp))
             Text(
                 text = "Inicia sesión en tu cuenta",
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displaySmall
             )
             Spacer(modifier = Modifier.padding(16.dp))
             CustomTextField(
