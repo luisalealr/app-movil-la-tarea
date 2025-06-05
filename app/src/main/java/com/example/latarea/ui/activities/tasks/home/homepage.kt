@@ -1,4 +1,4 @@
-package com.example.latarea.ui.activities.tasks.views
+package com.example.latarea.ui.activities.tasks.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
-import com.example.latarea.ui.activities.tasks.components.TaskCard
 import com.example.latarea.ui.activities.tasks.data.Option
 import com.example.latarea.ui.activities.tasks.data.options
 import com.example.latarea.ui.theme.LaTareaTheme
@@ -33,9 +32,8 @@ import java.util.Calendar
 import java.util.Locale
 
 
-@Preview
 @Composable
-fun HomePage(){
+fun HomePage(content: @Composable () -> Unit) {
     LaTareaTheme {
         Box(modifier = Modifier.fillMaxSize()){
             Scaffold (
@@ -43,12 +41,11 @@ fun HomePage(){
                 bottomBar = {BottomBar()}
             ){ innerPadding ->
                 Column(modifier = Modifier.padding(innerPadding).padding(horizontal = 18.dp, vertical = 5.dp)) {
-                    TaskCard()
+                    content()
                 }
             }
         }
     }
-
 }
 
 @Preview

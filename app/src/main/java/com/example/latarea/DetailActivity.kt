@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 class DetailActivity : ComponentActivity() {
 
@@ -21,6 +22,7 @@ class DetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        AndroidThreeTen.init(this)
 
         auth = Firebase.auth
         enableEdgeToEdge()

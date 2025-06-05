@@ -79,4 +79,18 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
+    // persistencia
+    implementation(libs.androidx.datastore.preferences)
+
+    // formatos de fecha
+    implementation(libs.threetenabp)
+
+
+
 }

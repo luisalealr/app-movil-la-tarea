@@ -1,6 +1,5 @@
 package com.example.latarea.ui.activities.login.views
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -35,7 +34,7 @@ import com.example.latarea.ui.theme.LaTareaTheme
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, auth: FirebaseAuth) {
+fun LoginScreen(viewModel: LoginViewModel, auth: FirebaseAuth, navigateToHome: () -> Unit) {
     LaTareaTheme {
         Box(
             Modifier
@@ -47,14 +46,20 @@ fun LoginScreen(viewModel: LoginViewModel, auth: FirebaseAuth) {
                     .align(Alignment.Center)
                     .padding(20.dp),
                 viewModel,
-                auth
+                auth,
+                navigateToHome
             )
         }
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel, auth: FirebaseAuth) {
+fun Login(
+    modifier: Modifier,
+    viewModel: LoginViewModel,
+    auth: FirebaseAuth,
+    navigateToHome: () -> Unit
+) {
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
@@ -92,8 +97,10 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, auth: FirebaseAuth) {
                 loginEnable,
                 auth,
                 email,
-                password
-            ) { viewModel.onLoginSelected() }
+                password,
+                viewModel,
+                navigateToHome
+            )
             Spacer(modifier = Modifier.padding(16.dp))
             Text(
                 text = "o sino",
@@ -141,19 +148,20 @@ fun BotonIniciarSesion(
     auth: FirebaseAuth,
     email: String,
     password: String,
-    onLoginSelected: () -> Unit
+    viewModel: LoginViewModel,
+    navigateToHome: () -> Unit,
 ) {
     Box(modifier) {
         Button(
-            onClick = { auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                    if(task.isSuccessful){
-                        //navegar
-                        Log.i("aris", "LOGIN OK")
-                    }else{
-                        //Error
-                        Log.i("aris", "LOGIN KO")
+            onClick = {
+                viewModel.firebaseLogin (auth, email, password) { success ->
+                    if (success) {
+                        navigateToHome()
+                    } else {
+                        // Aquí puedes mostrar error o toast
                     }
-            } },
+                }
+            },
             shape = RoundedCornerShape(5.dp),
             enabled = loginEnable
         ) {

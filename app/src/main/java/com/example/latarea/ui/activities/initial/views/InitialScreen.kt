@@ -111,7 +111,7 @@ fun ButtonSignUp(modifier: Modifier, navigateToSignUp: () -> Unit) {
             )
             ){
             Text(
-                text = "Iniciar Sesión",
+                text = "Registrarse",
                 color = MaterialTheme.colorScheme.primaryContainer
             )
         }
