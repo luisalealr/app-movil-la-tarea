@@ -44,14 +44,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.latarea.data.helper.TokenManager
 import com.example.latarea.data.network.RetrofitClient
-import com.example.latarea.ui.activities.createSubject.views.SubjectViewModel
-import com.example.latarea.ui.activities.createSubject.views.SubjectViewModelFactory
+import com.example.latarea.ui.activities.schedule.createSubject.model.SubjectViewModel
+import com.example.latarea.ui.activities.schedule.createSubject.model.SubjectViewModelFactory
 import com.example.latarea.ui.activities.tasks.home.HomePage
 import com.example.latarea.ui.theme.LaTareaTheme
 import java.text.SimpleDateFormat
@@ -65,7 +64,6 @@ import com.example.latarea.ui.activities.tasks.model.TaskViewModelFactory
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
-@Preview
 @Composable
 fun CreateTask(navController: NavController) {
 
@@ -76,7 +74,7 @@ fun CreateTask(navController: NavController) {
     val taskApi = RetrofitClient.taskApi
     val factoryTask = TaskViewModelFactory(taskApi)
     val tasksViewModel: TaskViewModel = viewModel(factory = factoryTask)
-    HomePage {
+    HomePage(navController) {
         Create(subjectViewModel, tasksViewModel, navController)
     }
 }

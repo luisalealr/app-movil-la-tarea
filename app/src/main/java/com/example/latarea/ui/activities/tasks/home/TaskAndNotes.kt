@@ -1,5 +1,7 @@
 package com.example.latarea.ui.activities.tasks.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.latarea.data.helper.TokenManager
 import com.example.latarea.data.network.RetrofitClient
 import com.example.latarea.ui.activities.tasks.components.NotesCard
@@ -45,8 +48,13 @@ import com.example.latarea.ui.activities.tasks.model.TaskViewModel
 import com.example.latarea.ui.activities.tasks.model.TaskViewModelFactory
 import com.example.latarea.ui.theme.LaTareaTheme
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun TaskAndNotesScreen(createTask: () -> Unit, createNote: () -> Unit) {
+fun TaskAndNotesScreen(
+    createTask: () -> Unit,
+    createNote: () -> Unit,
+    navController: NavController
+) {
     val taskApi = RetrofitClient.taskApi
     val factoryTask = TaskViewModelFactory(taskApi)
     val tasksViewModel: TaskViewModel = viewModel(factory = factoryTask)
@@ -54,28 +62,27 @@ fun TaskAndNotesScreen(createTask: () -> Unit, createNote: () -> Unit) {
     val noteApi = RetrofitClient.noteApi
     val factoryNote = NotesViewModelFactory(noteApi)
     val notesViewModel: NotesViewModel = viewModel(factory = factoryNote)
-    HomePage {
-        TaskAndNotesPage(tasksViewModel, notesViewModel, createTask, createNote)
+    HomePage(navController) {
+        TaskAndNotesPage(tasksViewModel, notesViewModel, createTask, createNote, navController)
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun TaskAndNotesPage(
     tasksViewModel: TaskViewModel,
     notesViewModel: NotesViewModel,
     createTask: () -> Unit,
-    createNote: () -> Unit
+    createNote: () -> Unit,
+    navController: NavController
 ) {
     val context = LocalContext.current
-    val tasks = tasksViewModel.tasks.value
+    val tasks by tasksViewModel.tasks
     val notes = notesViewModel.notes.value
-
-    // Estado para guardar el token
     var token by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) {
         token = TokenManager.getToken(context)
-        println("Token obtenido: $token")
         token?.let {
             tasksViewModel.loadTasks(it)
             notesViewModel.loadNotes(it)
@@ -87,6 +94,7 @@ fun TaskAndNotesPage(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
+                // Sección de notas
                 Column(
                     modifier = Modifier.height(250.dp)
                 ) {
@@ -109,11 +117,24 @@ fun TaskAndNotesPage(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(notes) { note ->
-                                NotesCard(note)
+                                NotesCard(note,
+                                    onChecked = {
+                                        token?.let {
+                                            notesViewModel.deleteNote(note.id, it)
+                                            // Aquí simplemente recargas desde el servidor o haces una copia local
+                                            notesViewModel.loadNotes(it)
+                                        }
+                                    },
+                                    onClick = {
+                                        navController.navigate("noteDetail/${note.id}")
+                                    }
+                                )
                             }
                         }
                     }
                 }
+
+                // Sección de tareas
                 Column {
                     Text(
                         text = "Tareas",
@@ -128,14 +149,29 @@ fun TaskAndNotesPage(
                         modifier = Modifier.fillMaxWidth(0.95f)
                     ) {
                         LazyColumn {
-                            items(tasks) { task ->
-                                TaskCard(task)
+                            items(tasks, key = { it.id }) { task ->
+                                TaskCard(
+                                    task = task,
+                                    onChecked = {
+                                        token?.let {
+                                            tasksViewModel.deleteTask(task.id, it)
+                                            // Aquí simplemente recargas desde el servidor o haces una copia local
+                                            tasksViewModel.loadTasks(it)
+                                        }
+                                    },
+                                    onClick = {
+                                        navController.navigate("taskDetail/${task.id}")
+                                    }
+
+                                )
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
                     }
                 }
             }
+
+            // Botón flotante
             AddSomething(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -146,6 +182,7 @@ fun TaskAndNotesPage(
         }
     }
 }
+
 
 @Composable
 fun AddSomething(
@@ -168,7 +205,7 @@ fun AddSomething(
                     text = "Nota rápida",
                     navegar = createNote,
 
-                )
+                    )
                 SmallFabItem(
                     text = "Tarea",
                     navegar = createTask
@@ -199,7 +236,7 @@ fun SmallFabItem(text: String, navegar: () -> Unit) {
     ) {
         Button(
             onClick = { navegar() }
-        ){
+        ) {
             Text(text)
         }
     }

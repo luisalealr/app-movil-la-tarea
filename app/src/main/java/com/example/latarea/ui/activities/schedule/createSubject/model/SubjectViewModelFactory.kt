@@ -1,4 +1,4 @@
-package com.example.latarea.ui.activities.createSubject.views
+package com.example.latarea.ui.activities.schedule.createSubject.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

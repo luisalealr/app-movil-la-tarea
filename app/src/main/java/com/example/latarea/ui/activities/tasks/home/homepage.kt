@@ -2,6 +2,7 @@ package com.example.latarea.ui.activities.tasks.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
 import com.example.latarea.ui.activities.tasks.data.Option
 import com.example.latarea.ui.activities.tasks.data.options
 import com.example.latarea.ui.theme.LaTareaTheme
@@ -33,12 +35,12 @@ import java.util.Locale
 
 
 @Composable
-fun HomePage(content: @Composable () -> Unit) {
+fun HomePage(navController: NavController, content: @Composable () -> Unit) {
     LaTareaTheme {
         Box(modifier = Modifier.fillMaxSize()){
             Scaffold (
                 topBar = {TopBar()},
-                bottomBar = {BottomBar()}
+                bottomBar = {BottomBar(navController)}
             ){ innerPadding ->
                 Column(modifier = Modifier.padding(innerPadding).padding(horizontal = 18.dp, vertical = 5.dp)) {
                     content()
@@ -48,9 +50,8 @@ fun HomePage(content: @Composable () -> Unit) {
     }
 }
 
-@Preview
 @Composable
-fun BottomBar(){
+fun BottomBar(navController: NavController){
     LaTareaTheme {
         LazyRow (
             modifier = Modifier
@@ -63,6 +64,7 @@ fun BottomBar(){
             items(items = options) { option ->
                 BottomBarItems(
                     option = option,
+                    onClick = { navController.navigate(option.route) }
                 )
             }
         }
@@ -71,13 +73,14 @@ fun BottomBar(){
 
 
 @Composable
-fun BottomBarItems(option: Option){
+fun BottomBarItems(option: Option, onClick: () -> Unit){
     LaTareaTheme {
         Column(
             modifier = Modifier
                 .height(50.dp)
                 .width(65.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable { onClick() },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {

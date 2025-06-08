@@ -1,4 +1,4 @@
-package com.example.latarea.ui.activities.createSubject.views
+package com.example.latarea.ui.activities.schedule.createSubject.model
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,6 +11,7 @@ class SubjectViewModel(private val api: SubjectApi) : ViewModel() {
 
     val subjects = mutableStateOf<List<SubjectResponse>>(emptyList())
     val errorMessage = mutableStateOf("")
+    val selectedSubject = mutableStateOf<SubjectResponse?>(null)
 
     fun loadSubjects(token: String) {
         viewModelScope.launch {
@@ -21,6 +22,22 @@ class SubjectViewModel(private val api: SubjectApi) : ViewModel() {
                     errorMessage.value = ""
                 } else {
                     errorMessage.value = "Error al cargar las materias: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage.value = "Error de red: ${e.message}"
+            }
+        }
+    }
+
+    fun getSubjectById(subjectId: Int?, token: String) {
+        viewModelScope.launch {
+            try {
+                val response = api.getSubjectById(subjectId, "Bearer $token")
+                if (response.isSuccessful) {
+                    selectedSubject.value = response.body()
+                    errorMessage.value = ""
+                } else {
+                    errorMessage.value = "Error al cargar la tarea: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage.value = "Error de red: ${e.message}"

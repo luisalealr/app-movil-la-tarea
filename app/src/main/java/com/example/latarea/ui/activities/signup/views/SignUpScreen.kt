@@ -100,7 +100,7 @@ fun SignUp(modifier: Modifier, navigateToHome: () -> Unit, viewModel: SignUpView
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.padding(16.dp))
-            BotonIngresarConGoogle(modifier = Modifier.align(Alignment.CenterHorizontally))
+           // BotonIngresarConGoogle(modifier = Modifier.align(Alignment.CenterHorizontally))
 
         }
     }

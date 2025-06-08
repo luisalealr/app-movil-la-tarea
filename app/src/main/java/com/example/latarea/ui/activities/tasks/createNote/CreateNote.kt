@@ -41,7 +41,7 @@ fun CreateNote(navController: NavController) {
     val factoryNote = NotesViewModelFactory(noteApi)
     val notesViewModel: NotesViewModel = viewModel(factory = factoryNote)
 
-    HomePage {
+    HomePage(navController) {
         NoteForm(notesViewModel, navController)
     }
 }

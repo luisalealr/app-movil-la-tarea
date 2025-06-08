@@ -2,6 +2,7 @@ package com.example.latarea.ui.activities.tasks.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,23 +28,25 @@ import com.example.latarea.ui.activities.tasks.utils.ParseColor
 import com.example.latarea.ui.theme.LaTareaTheme
 
 @Composable
-fun TaskCard(task: TaskResponse) {
-
-    var isChecked by remember { mutableStateOf(false) }
-
+fun TaskCard(task: TaskResponse, onChecked: () -> Unit, onClick: () -> Unit) {
     LaTareaTheme {
         Box(
             modifier = Modifier
-                .border(2.dp,Color.Gray,RoundedCornerShape(8.dp))
+                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
                 .background(ParseColor(task.colorHexa.toString()))
                 .padding(8.dp)
                 .width(480.dp)
                 .height(75.dp)
-        ){
+                .clickable { onClick() }
+        ) {
             Row {
                 Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = { isChecked = it },
+                    checked = false,
+                    onCheckedChange = { isChecked ->
+                        if (isChecked) {
+                            onChecked() // eliminamos directamente
+                        }
+                    }
                 )
                 Column {
                     Text(
@@ -64,5 +67,4 @@ fun TaskCard(task: TaskResponse) {
             }
         }
     }
-
 }

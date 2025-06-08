@@ -107,7 +107,7 @@ fun Login(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.padding(16.dp))
-            BotonIngresarConGoogle(modifier = Modifier.align(Alignment.CenterHorizontally))
+           // BotonIngresarConGoogle(modifier = Modifier.align(Alignment.CenterHorizontally))
 
         }
     }
